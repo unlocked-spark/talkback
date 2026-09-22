@@ -97,3 +97,14 @@ dependencies {
     implementation "org.apache.commons:commons-text:1.4"
 
 }
+
+// Java targets 17 above, while Kotlin follows the JDK that runs the build, which is 21 in
+// Android Studio's bundled runtime. Gradle refuses a module whose two compilers disagree.
+// The task level setting is used instead of the `kotlinOptions` block, because that block
+// does not exist on the android extension until the Kotlin plugin has been applied, and
+// shared.gradle is read first.
+plugins.withId("org.jetbrains.kotlin.android") {
+    tasks.matching { it.name.startsWith("compile") && it.name.endsWith("Kotlin") }.configureEach { task ->
+        task.kotlinOptions.jvmTarget = "17"
+    }
+}

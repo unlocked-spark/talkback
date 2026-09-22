@@ -21,3 +21,6 @@ build/
 proguard/build/
 talkback/build/
 utils/build/
+
+build/
+*/build/

@@ -3,7 +3,10 @@ apply from: "../../shared.gradle"
 
 android {
     namespace "com.google.android.accessibility.braille.brltty"
-    ndkVersion "21.4.7075529"
+    // NDK 21 nie ma hosta arm64: ndk-build konczy sie "Unknown host CPU architecture:
+    // arm64" na maku z Apple Silicon. Wersja 27 ma natywnego hosta i buduje ten sam
+    // kod brajlowski, ktorego my nie uzywamy, ale ktory jest wpisany w kod uslugi.
+    ndkVersion "27.3.13750724"
     externalNativeBuild {
         ndkBuild {
             path file('src/phone/jni/Android.mk')
