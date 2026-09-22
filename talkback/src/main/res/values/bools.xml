@@ -20,7 +20,7 @@
     <!-- Whether to show play store in preference. -->
     <bool name="show_play_store">true</bool>
     <!-- Whether to skip showing tutorial in TalkBack launching. (not from user behaviors) -->
-    <!-- Ten build jest narzedziem badawczym, nie czytnikiem do codziennego uzytku: samouczek
-         pierwszego uruchomienia przejmuje ekran i zaslania badana aplikacje. -->
+    <!-- This build is a measuring instrument, not a reader for daily use: the first run
+         tutorial takes over the screen and hides the application under test. -->
     <bool name="skip_tutorial_in_launching">true</bool>
 </resources>

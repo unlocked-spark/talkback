@@ -1860,7 +1860,8 @@ public class SelectorController implements UserInputEventListener {
   }
 
   /** Moves to the next or previous at specific granularity. */
-  private void moveAtGranularity(EventId eventId, Granularity granularity, boolean isNext) {
+  // Visible to the service, which forwards a command line request to it.
+  public void moveAtGranularity(EventId eventId, Granularity granularity, boolean isNext) {
     // Sets granularity and locks navigate within the focused node.
     pipeline.returnFeedback(eventId, Feedback.granularity(granularity.cursorGranularity));
 

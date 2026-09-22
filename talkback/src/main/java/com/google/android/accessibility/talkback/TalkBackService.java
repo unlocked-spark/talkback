@@ -107,6 +107,7 @@ import com.google.android.accessibility.talkback.actor.AutoScrollActor;
 import com.google.android.accessibility.talkback.actor.BrailleDisplayActor;
 import com.google.android.accessibility.talkback.actor.DimScreenActor;
 import com.google.android.accessibility.talkback.actor.DimScreenActor.DimScreenNotifier;
+import com.google.android.accessibility.talkback.adb.AdbReceiver;
 import com.google.android.accessibility.talkback.actor.DirectionNavigationActor;
 import com.google.android.accessibility.talkback.actor.FocusActor;
 import com.google.android.accessibility.talkback.actor.FocusActorForScreenStateChange;
@@ -299,6 +300,24 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /** An {@link AccessibilityService} that provides spoken, haptic, and audible feedback. */
 public class TalkBackService extends AccessibilityServiceCompat
     implements Thread.UncaughtExceptionHandler, SpeechController.Delegate {
+
+  // Command line control, see the adb package. Both methods exist so the receiver has
+  // something to call: one runs the action a gesture is bound to, the other moves the reading
+  // position at a chosen granularity, which is how a person moves through a screen.
+  public void performGesture(String gestureString) {
+    EventId eventId =
+        Performance.getInstance()
+            .onEventReceived(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_UNKNOWN));
+    gestureController.performAction(gestureString, eventId);
+  }
+
+  public void moveAtGranularity(SelectorController.Granularity granularity, boolean isNext) {
+    EventId eventId =
+        Performance.getInstance()
+            .onEventReceived(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_UNKNOWN));
+    selectorController.moveAtGranularity(eventId, granularity, isNext);
+  }
+
 
   private static class IpcClientCallbackImpl
       implements IpcService.IpcClientCallback, TrainingState {
@@ -884,6 +903,7 @@ public class TalkBackService extends AccessibilityServiceCompat
 
   @Override
   public void onDestroy() {
+    AdbReceiver.unregisterAdbReceiver(this);
     if (userInterface != null) {
       userInterface.unregisterAllListeners();
     }
@@ -1540,6 +1560,7 @@ public class TalkBackService extends AccessibilityServiceCompat
 
   @Override
   protected void onServiceConnected() {
+    AdbReceiver.registerAdbReceiver(this);
     super.onServiceConnected();
     EventId talkbackOnEventId =
         Performance.getInstance().onHintEventReceived(Performance.HINT_SUB_TYPE_TALKBACK_ON);
